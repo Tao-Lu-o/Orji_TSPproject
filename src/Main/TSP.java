@@ -8,20 +8,67 @@ import static java.lang.System.exit;
 public class TSP {
 // Instance Variables
 private double distance = 0.0;
-private Map<Coordinate, List<Coordinate>> graph;
-private List<List<Coordinate>> input = new ArrayList<List<Coordinate>>();
+private ArrayList<ArrayList<Coordinate>> input = new ArrayList<ArrayList<Coordinate>>();
 
 // Methods
     // Large method run logic: add coordinates, calculate distances using heuristic and greedy while timing,
-        // then output the answer for each. Additionally, output the times for each input.
+    // then output the answer for each. Additionally, output the times for each input.
     void runTSP(){
-
+        parseInput();
+        heuristicAlgorithm();
+        greedyAlgorithm();
     }
+
     // Run heurisitic algorithm
+    void heuristicAlgorithm(){
+        for(int i = 0; i < input.size(); i++) {
+            System.out.println("Running setup for Heuristic Algorithm...");
+            Map<Coordinate, ArrayList<Coordinate>> graph = new HashMap<Coordinate, ArrayList<Coordinate>>();
+            initialization(graph,i);
+
+            System.out.println("Running Heurstic Algorithm...");
+
+            System.out.println("Finished running the Heuristic Algorithm!");
+        }
+    }
+
     // Run Greedy algorithm
+    void greedyAlgorithm(){
+        for(int i = 0; i < input.size(); i++) {
+            System.out.println("Running setup on input " + (i+1) + " for Greedy Algorithm...");
+            Map<Coordinate, ArrayList<Coordinate>> graph = new HashMap<Coordinate, ArrayList<Coordinate>>();
+            initialization(graph,i);
+
+            System.out.println("Running Greedy Algorithm...\n");
+
+
+
+            System.out.println("\nFinished running the Greedy Algorithm!\n");
+        }
+    }
     // Add a coordinate to the graph
     // Calculate the distance between two coordinates
     // Output answer for algorithm + time
+
+    // Initialize the algorithms
+    void initialization(Map<Coordinate, ArrayList<Coordinate>> obj, int index){
+        for(int j = 0; j < input.get(index).size(); j++){
+            ArrayList<Coordinate> copy = new ArrayList<Coordinate>(input.get(index));
+            copy.remove(j);
+            obj.put(input.get(index).get(j),copy);
+        }
+
+        //            for(Map.Entry coord : graph.entrySet()){
+        //                Coordinate key = (Coordinate)coord.getKey();
+        //                System.out.println("The coordinate for this set is: " + "[" + key.x + ", " + key.y + "]");
+        //                List<Coordinate> value = (List<Coordinate>)coord.getValue();
+        //                System.out.println("These are the values for the set: ");
+        //                for(Coordinate k : value){
+        //                    System.out.println("[" + k.x + ", " + k.y + "]");
+        //                }
+        //            }
+    }
+
     // Parse input and transform into a List of Coordinates
     void parseInput(){
         // Variable setup
@@ -50,7 +97,7 @@ private List<List<Coordinate>> input = new ArrayList<List<Coordinate>>();
             }
             // Private input variable is populated with ArrayLists containing Coordinates for each input file
             int tracker = 0;
-            List<Coordinate> temp = new ArrayList<Coordinate>();
+            ArrayList<Coordinate> temp = new ArrayList<Coordinate>();
             input.add(temp);
             while (myReader.hasNextLine()) {
                 if(tracker == 0) myReader.nextLine();
@@ -76,7 +123,6 @@ private List<List<Coordinate>> input = new ArrayList<List<Coordinate>>();
 //            counter++;
 //        }
     }
-
 
     // Getters, Setters, and Misc. Helper methods
     void setDistance(double dist){

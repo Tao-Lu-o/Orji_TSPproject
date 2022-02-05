@@ -6,7 +6,7 @@ import java.io.*;
 public class Main {
     public static void main(String[] args){
         System.out.println("Hello World");
-        TSP test = new TSP();
-        test.parseInput();
+        TSP obj = new TSP();
+        obj.runTSP();
     }
 }

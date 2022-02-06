@@ -1,5 +1,6 @@
 package Main;
 
+import java.time.*;
 import java.util.*;
 import java.io.*;
 
@@ -15,7 +16,7 @@ private ArrayList<ArrayList<Coordinate>> input = new ArrayList<ArrayList<Coordin
     // then output the answer for each. Additionally, output the times for each input.
     void runTSP(){
         parseInput();
-        heuristicAlgorithm();
+//        heuristicAlgorithm();
         greedyAlgorithm();
     }
 
@@ -41,14 +42,69 @@ private ArrayList<ArrayList<Coordinate>> input = new ArrayList<ArrayList<Coordin
 
             System.out.println("Running Greedy Algorithm...\n");
 
+            ArrayList<Coordinate> visited = new ArrayList<Coordinate>();
+            Coordinate startingCoord =  input.get(i).get(0);
+            Coordinate endingCoord = input.get(i).get(0);
 
+            long startTime = System.nanoTime();
+            while(visited.size() < graph.size()){
+                double min = -1.0;
+                double diff = 0.0;
+//                System.out.println("Starting coordinate is: " + "[" + startingCoord.x + ", " + startingCoord.y + "]");
+                ArrayList<Coordinate> vals = graph.get(startingCoord);
+                for(Coordinate temp : vals){
+                    if(!visited.contains(temp)){
+                        diff = distanceFormula(startingCoord,temp);
+//                        System.out.println("Diff is: " + diff);
+                        if(min == -1.0){
+                            min = diff;
+                            endingCoord = temp;
+//                            System.out.println("Min is " + min + " and diff is " + diff +
+//                                    ", so endingCoord is now [" + endingCoord.x + ", " + endingCoord.y + "]");
+                        }
+                        else{
+                            if(min > diff){
+                                min = diff;
+                                endingCoord = temp;
+//                                System.out.println("Min is " + min + " and diff is " + diff +
+//                                        ", so endingCoord is now [" + endingCoord.x + ", " + endingCoord.y + "]");
+                            }
+                        }
+                    }
+                }
+                distance += diff;
+                visited.add(startingCoord);
+                startingCoord = endingCoord;
+            }
+            visited.add(input.get(i).get(0));
+            long endTime = System.nanoTime();
+            long timeElapsed = endTime - startTime;
 
+            printSummary(timeElapsed,visited);
             System.out.println("\nFinished running the Greedy Algorithm!\n");
         }
     }
-    // Add a coordinate to the graph
     // Calculate the distance between two coordinates
+    double distanceFormula(Coordinate start, Coordinate end){
+        double dist = 0.0;
+        double xOne,yOne,xTwo,yTwo;
+        xOne = ((Integer) start.x).doubleValue();
+        yOne = ((Integer) start.y).doubleValue();
+        xTwo = ((Integer)end.x).doubleValue();
+        yTwo = ((Integer)end.y).doubleValue();
+        dist = Math.sqrt(Math.pow((xTwo - xOne),2.0) + Math.pow((yTwo - yOne),2.0));
+
+        return dist;
+    }
+
     // Output answer for algorithm + time
+    void printSummary(long elapsed, ArrayList<Coordinate> route){
+        System.out.println(distance);
+        for(Coordinate coord : route){
+            System.out.println("[" + coord.x + ", " + coord.y + "]");
+        }
+        System.out.println(elapsed);
+    }
 
     // Initialize the algorithms
     void initialization(Map<Coordinate, ArrayList<Coordinate>> obj, int index){

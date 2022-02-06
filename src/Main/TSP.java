@@ -36,63 +36,79 @@ private ArrayList<ArrayList<Coordinate>> input = new ArrayList<ArrayList<Coordin
     // Run Greedy algorithm
     void greedyAlgorithm(){
         for(int i = 0; i < input.size(); i++) {
+            // Setup includes populating the graph for each input
             System.out.println("Running setup on input " + (i+1) + " for Greedy Algorithm...");
             Map<Coordinate, ArrayList<Coordinate>> graph = new HashMap<Coordinate, ArrayList<Coordinate>>();
             initialization(graph,i);
 
             System.out.println("Running Greedy Algorithm...\n");
 
+            // Variables for coordinates in algorithm loop declared
             ArrayList<Coordinate> visited = new ArrayList<Coordinate>();
             Coordinate startingCoord =  input.get(i).get(0);
             Coordinate endingCoord = input.get(i).get(0);
 
+            // Time starts, algorithm starts
             long startTime = System.nanoTime();
+
+            // Algorithm ends once every point has been visited
             while(visited.size() < graph.size()){
+                // Variable declarations
                 double min = -1.0;
-                double diff = 0.0;
-//                System.out.println("Starting coordinate is: " + "[" + startingCoord.x + ", " + startingCoord.y + "]");
+                double diff;
+                double finalDiff = 0.0;
+
+                // Values for that specific coordinate are loaded in
                 ArrayList<Coordinate> vals = graph.get(startingCoord);
                 for(Coordinate temp : vals){
+                    // As long as the chosen coordinate is not in visited, the
+                    // if condition will run
                     if(!visited.contains(temp)){
+                        // Distance between the end coordinate and starting is calculated,
+                        // then checked against the current min. If the conditions are met,
+                        // then the current min, finalDiff for the loop, and endingCoord are all updated.
                         diff = distanceFormula(startingCoord,temp);
-//                        System.out.println("Diff is: " + diff);
                         if(min == -1.0){
                             min = diff;
+                            finalDiff = min;
                             endingCoord = temp;
-//                            System.out.println("Min is " + min + " and diff is " + diff +
-//                                    ", so endingCoord is now [" + endingCoord.x + ", " + endingCoord.y + "]");
                         }
                         else{
                             if(min > diff){
                                 min = diff;
+                                finalDiff = min;
                                 endingCoord = temp;
-//                                System.out.println("Min is " + min + " and diff is " + diff +
-//                                        ", so endingCoord is now [" + endingCoord.x + ", " + endingCoord.y + "]");
                             }
                         }
                     }
                 }
-                distance += diff;
+                // Distance between points is added onto the output distance, the current starting coordinate
+                // is added to the visited list, and then the starting coordinate
+                // is set to the current ending coordinate.
+                distance += finalDiff;
                 visited.add(startingCoord);
                 startingCoord = endingCoord;
             }
+            // Finally, the "loop" back to the beginning is added, the distance is calculated,
+            // and time finally ends and is also calcualted.
             visited.add(input.get(i).get(0));
+            distance += distanceFormula(visited.get(visited.size()-1),visited.get(visited.size()-2));
             long endTime = System.nanoTime();
             long timeElapsed = endTime - startTime;
 
+            // Summary prints for that input
             printSummary(timeElapsed,visited);
             System.out.println("\nFinished running the Greedy Algorithm!\n");
         }
     }
     // Calculate the distance between two coordinates
     double distanceFormula(Coordinate start, Coordinate end){
-        double dist = 0.0;
         double xOne,yOne,xTwo,yTwo;
         xOne = ((Integer) start.x).doubleValue();
         yOne = ((Integer) start.y).doubleValue();
         xTwo = ((Integer)end.x).doubleValue();
         yTwo = ((Integer)end.y).doubleValue();
-        dist = Math.sqrt(Math.pow((xTwo - xOne),2.0) + Math.pow((yTwo - yOne),2.0));
+        double dist = Math.sqrt(Math.pow((xTwo - xOne),2.0) + Math.pow((yTwo - yOne),2.0));
 
         return dist;
     }
@@ -180,11 +196,4 @@ private ArrayList<ArrayList<Coordinate>> input = new ArrayList<ArrayList<Coordin
 //        }
     }
 
-    // Getters, Setters, and Misc. Helper methods
-    void setDistance(double dist){
-        this.distance = dist;
-    }
-    double getDistance(){
-        return this.distance;
-    }
 }

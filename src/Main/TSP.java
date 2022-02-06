@@ -4,31 +4,37 @@ import java.util.*;
 import java.io.*;
 
 import static java.lang.System.exit;
+import static java.lang.System.in;
 
 public class TSP {
 // Instance Variables
 private double distance = 0.0;
 private ArrayList<ArrayList<Coordinate>> input = new ArrayList<ArrayList<Coordinate>>();
+private ArrayList<ArrayList<Coordinate>> permutations = new ArrayList<ArrayList<Coordinate>>();
 
 // Methods
     // Large method run logic: add coordinates, calculate distances using heuristic and greedy while timing,
     // then output the answer for each. Additionally, output the times for each input.
     void runTSP(){
         parseInput();
-//        heuristicAlgorithm();
-        greedyAlgorithm();
+        exhaustiveAlgorithm();
+//        greedyAlgorithm();
     }
 
-    // Run heurisitic algorithm
+    // Run exhaustive algorithm
     void exhaustiveAlgorithm(){
         for(int i = 0; i < input.size(); i++) {
-            System.out.println("Running setup for Heuristic Algorithm...");
+            distance = 0.0;
+            System.out.println("Running setup for Exhaustive Algorithm...");
             Map<Coordinate, ArrayList<Coordinate>> graph = new HashMap<Coordinate, ArrayList<Coordinate>>();
             initialization(graph,i);
 
-            System.out.println("Running Heurstic Algorithm...");
+            System.out.println("Running Exhaustive Algorithm...\n");
 
-            System.out.println("Finished running the Heuristic Algorithm!");
+            ArrayList<Coordinate> copy = new ArrayList<Coordinate>(input.get(i));
+            findPermutations(copy.size(),copy);
+
+            System.out.println("\nFinished running the Exhaustive Algorithm!\n");
         }
     }
 
@@ -101,6 +107,7 @@ private ArrayList<ArrayList<Coordinate>> input = new ArrayList<ArrayList<Coordin
             System.out.println("\nFinished running the Greedy Algorithm!\n");
         }
     }
+
     // Calculate the distance between two coordinates
     double distanceFormula(Coordinate start, Coordinate end){
         double xOne,yOne,xTwo,yTwo;
@@ -111,6 +118,35 @@ private ArrayList<ArrayList<Coordinate>> input = new ArrayList<ArrayList<Coordin
         double dist = Math.sqrt(Math.pow((xTwo - xOne),2.0) + Math.pow((yTwo - yOne),2.0));
 
         return dist;
+    }
+
+    // Recursive algorithm to find permutations
+    void findPermutations(int size, ArrayList<Coordinate> elements){
+        if(size == 1){
+            savePermutation(elements);
+        }
+        else{
+            for(int i = 0; i < size-1; i++){
+                findPermutations(size-1,elements);
+                if(size % 2 == 0){
+                    Collections.swap(elements,i,size-1);
+                }
+                else{
+                    Collections.swap(elements,0,size-1);
+                }
+            }
+            findPermutations(size-1,elements);
+        }
+    }
+
+    // Helper function for findPermutations; adds the permutation to an arrayList
+    void savePermutation(ArrayList<Coordinate> next){
+        permutations.add(next);
+        System.out.println("Permutation to be saved: ");
+        for(Coordinate thing : next){
+            System.out.println("[" + thing.x + ", " + thing.y + "]");
+        }
+        System.out.println();
     }
 
     // Output answer for algorithm + time

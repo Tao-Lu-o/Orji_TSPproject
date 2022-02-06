@@ -18,44 +18,49 @@ private ArrayList<ArrayList<Coordinate>> permutations;
     void runTSP(){
         parseInput();
         exhaustiveAlgorithm();
-//        greedyAlgorithm();
+        greedyAlgorithm();
     }
 
     // Run exhaustive algorithm
     void exhaustiveAlgorithm(){
         for(int i = 0; i < input.size(); i++) {
+            // Initialization of variables
+            System.out.println("Running setup on input " + (i+1) + " for Exhaustive Algorithm...");
             permutations = new ArrayList<ArrayList<Coordinate>>();
             distance = Double.MAX_VALUE;
-            System.out.println("Running setup on input " + (i+1) + " for Exhaustive Algorithm...");
-            Map<Coordinate, ArrayList<Coordinate>> graph = new HashMap<Coordinate, ArrayList<Coordinate>>();
-            initialization(graph,i);
+            ArrayList<Coordinate> visited = new ArrayList<Coordinate>();
 
             System.out.println("Running Exhaustive Algorithm...\n");
 
+            // Time start
+            long timeStart = System.nanoTime();
+
+            // Permutations are found and stored in the private variable.
+            // A copy of input is used for alterations so the original won't be affected.
             ArrayList<Coordinate> copy = new ArrayList<Coordinate>(input.get(i));
             findPermutations(copy.size(),copy);
             for(int j = 0; j < permutations.size(); j++){
-//                System.out.println("Going through permutation " + (j+1));
-//                for(Coordinate thing : permutations.get(j)){
-//                    System.out.println("[" + thing.x + ", " + thing.y + "]");
-//                }
+                // localDist is declared for additions within the inner for loop
                 double localDist = 0.0;
                 for(int k = 0; k < permutations.get(j).size(); k++){
+                    // Distance between points for each permutation is added up in localDist
                     if(k < permutations.get(j).size() - 1) {
                         localDist += distanceFormula(permutations.get(j).get(k), permutations.get(j).get(k + 1));
-//                        System.out.println("localDist is: " + localDist);
                     }
-                    else{
-                        localDist += distanceFormula(permutations.get(j).get(k),permutations.get(j).get(0));
-//                        System.out.println("localDist is: " + localDist);
-                    }
-
+                    else localDist += distanceFormula(permutations.get(j).get(k),permutations.get(j).get(0));
                 }
+                // Given that localDist < distance, visited is overwritten by the latest permutation
                 if(localDist < distance) {
                     distance = localDist;
-//                    System.out.println("localDist was less than distance, so distance is now: " + distance);
+                    visited = permutations.get(j);
+                    visited.add(permutations.get(j).get(0));
                 }
             }
+
+            // Time stop
+            long timeEnd = System.nanoTime();
+            long timeElapsed = timeEnd - timeStart;
+            printSummary(timeElapsed,visited);
 
             System.out.println("\nFinished running the Exhaustive Algorithm!\n");
         }
@@ -166,11 +171,6 @@ private ArrayList<ArrayList<Coordinate>> permutations;
     // Helper function for findPermutations; adds the permutation to an arrayList
     void savePermutation(ArrayList<Coordinate> next){
         permutations.add(next);
-//        System.out.println("Permutation to be saved: ");
-//        for(Coordinate thing : next){
-//            System.out.println("[" + thing.x + ", " + thing.y + "]");
-//        }
-//        System.out.println();
     }
 
     // Output answer for algorithm + time

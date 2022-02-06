@@ -1,6 +1,5 @@
 package Main;
 
-import java.time.*;
 import java.util.*;
 import java.io.*;
 
@@ -21,7 +20,7 @@ private ArrayList<ArrayList<Coordinate>> input = new ArrayList<ArrayList<Coordin
     }
 
     // Run heurisitic algorithm
-    void heuristicAlgorithm(){
+    void exhaustiveAlgorithm(){
         for(int i = 0; i < input.size(); i++) {
             System.out.println("Running setup for Heuristic Algorithm...");
             Map<Coordinate, ArrayList<Coordinate>> graph = new HashMap<Coordinate, ArrayList<Coordinate>>();
@@ -36,6 +35,7 @@ private ArrayList<ArrayList<Coordinate>> input = new ArrayList<ArrayList<Coordin
     // Run Greedy algorithm
     void greedyAlgorithm(){
         for(int i = 0; i < input.size(); i++) {
+            distance = 0.0;
             // Setup includes populating the graph for each input
             System.out.println("Running setup on input " + (i+1) + " for Greedy Algorithm...");
             Map<Coordinate, ArrayList<Coordinate>> graph = new HashMap<Coordinate, ArrayList<Coordinate>>();
